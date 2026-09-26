@@ -16,12 +16,23 @@ const PostSchema = z.object({
 
 const fetchArticle = async (id: number): Promise<Post> => {
   const response = await fetch(`https://jsonplaceholder.typicode.com/posts/${id}`);
-  const possiblePost = response.json();
+  const possiblePost = await response.json();
   return PostSchema.parse(possiblePost);
 };
 
+const articleCache = new Map<number, Promise<Post>>();
+
+const getArticle = (id: number): Promise<Post> => {
+  let promise = articleCache.get(id);
+  if (!promise) {
+    promise = fetchArticle(id);
+    articleCache.set(id, promise);
+  }
+  return promise;
+};
+
 export const NewsArticle = ({ id = 1 }: NewsArticleProps) => {
-  const article = use(fetchArticle(id));
+  const article = use(getArticle(id));
 
   return (
     <Card as="article" className="space-y-4 font-mono md:first:col-span-2">
