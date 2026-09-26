@@ -1,18 +1,21 @@
-import type { FormEventHandler, Dispatch, SetStateAction, ComponentPropsWithoutRef } from 'react';
+import type { FormEventHandler, ComponentPropsWithoutRef } from 'react';
 import { Card } from '$/common/components/card';
-import { useState } from 'react';
+import { useReducer } from 'react';
 import { Button } from './button';
+import { counterReducer } from './counter-reducer';
 
 type CounterControlsProps = {
-  setCount: Dispatch<SetStateAction<number>>;
+  onIncrement: () => void;
+  onDecrement: () => void;
+  onReset: () => void;
 };
 
-const CounterControls = ({ setCount }: CounterControlsProps) => {
+const CounterControls = ({ onIncrement, onDecrement, onReset }: CounterControlsProps) => {
   return (
     <div className="flex gap-2">
-      <Button onClick={() => setCount((prev) => Math.max(0, prev - 1))}>➖ Decrement</Button>
-      <Button onClick={() => setCount(0)}>🔁 Reset</Button>
-      <Button onClick={() => setCount((prev) => prev + 1)}>➕ Increment</Button>
+      <Button onClick={onDecrement}>➖ Decrement</Button>
+      <Button onClick={onReset}>🔁 Reset</Button>
+      <Button onClick={onIncrement}>➕ Increment</Button>
     </div>
   );
 };
@@ -34,20 +37,36 @@ const CounterForm = ({ onSubmit }: ComponentPropsWithoutRef<'form'>) => {
 };
 
 export const Counter = () => {
-  const [count, setCount] = useState(0);
+  const [counter, dispatch] = useReducer(counterReducer, { count: 0 });
 
   const handleSubmit: FormEventHandler<HTMLFormElement> = (e) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const newCount = Number(formData.get('count'));
-    setCount(newCount);
+    dispatch({ type: 'setCount', payload: newCount });
+  };
+
+  const handleIncrement = () => {
+    dispatch({ type: 'increment' });
+  };
+
+  const handleDecrement = () => {
+    dispatch({ type: 'decrement' });
+  };
+
+  const handleReset = () => {
+    dispatch({ type: 'reset' });
   };
 
   return (
     <Card className="border-primary-500 flex w-2/3 flex-col items-center gap-8">
       <h1>Days Since the Last Accident</h1>
-      <p className="text-6xl">{count}</p>
-      <CounterControls setCount={setCount} />
+      <p className="text-6xl">{counter.count}</p>
+      <CounterControls
+        onIncrement={handleIncrement}
+        onDecrement={handleDecrement}
+        onReset={handleReset}
+      />
       <CounterForm onSubmit={handleSubmit} />
     </Card>
   );

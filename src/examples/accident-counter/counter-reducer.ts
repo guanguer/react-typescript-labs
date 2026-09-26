@@ -1,36 +1,30 @@
-const initialState = {
-  count: 0,
-  draftCount: 0,
+type CounterState = {
+  count: number;
 };
 
-// Improvement: Define a proper Action type instead of using 'any'.
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const counterReducer = (state = initialState, action: any) => {
-  console.log({ action });
-  const { count, draftCount } = state;
+export type CounterAction =
+  | { type: 'increment' }
+  | { type: 'decrement' }
+  | { type: 'reset' }
+  | { type: 'setCount'; payload: number };
 
-  if (action.type === 'increment') {
-    const newCount = count + 1;
-    return { count: newCount, draftCount: newCount };
+export const counterReducer = (state: CounterState, action: CounterAction) => {
+  const { count } = state;
+
+  switch (action.type) {
+    case 'increment':
+      return { count: count + 1 };
+    case 'decrement':
+      return { count: Math.max(0, count - 1) };
+    case 'reset':
+      return { count: 0 };
+    case 'setCount': {
+      const next = Math.floor(action.payload);
+      return { count: Number.isFinite(next) ? Math.max(0, next) : state.count };
+    }
+    default: {
+      const _exhaustive: never = action;
+      return state;
+    }
   }
-
-  if (action.type === 'decrement') {
-    const newCount = count - 1;
-    return { count: newCount, draftCount: newCount };
-  }
-
-  if (action.type === 'reset') {
-    return { count: 0, draftCount: 0 };
-  }
-
-  if (action.type === 'updateDraftCount') {
-    console.log('updateDraftCount');
-    return { count, draftCount: action.payload };
-  }
-
-  if (action.type === 'updateCountFromDraft') {
-    return { count: Number(draftCount), draftCount };
-  }
-
-  return state;
 };
