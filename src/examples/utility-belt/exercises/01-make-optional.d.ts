@@ -21,5 +21,15 @@
  * - Use intersection types (&) to combine the results
  */
 
-// TODO: Implement MakeOptional here
-export type MakeOptional<T, K extends keyof T> = unknown;
+import { type } from 'os';
+import { K } from 'vitest/dist/chunks/reporters.d.BFLkQcL6.js';
+
+interface User {
+  id: number;
+  name: string;
+  email: string;
+  age: number;
+}
+
+export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
+type UserWithOptionalEmail = MakeOptional<User, 'email' | 'age'>;

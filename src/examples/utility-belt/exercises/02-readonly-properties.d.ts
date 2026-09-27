@@ -22,5 +22,12 @@
  * - Use intersection types (&) to combine them back together
  */
 
-// TODO: Implement MakeReadonly here
-export type MakeReadonly<T, K extends keyof T> = unknown;
+interface Config {
+  apiUrl: string;
+  timeout: number;
+  retries: number;
+  debug: boolean;
+}
+
+export type MakeReadonly<T, K extends keyof T> = Omit<T, K> & Readonly<Pick<T, K>>;
+type ConfigWithReadonlyUrl = MakeReadonly<Config, 'apiUrl'>;

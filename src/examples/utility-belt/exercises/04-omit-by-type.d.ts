@@ -23,5 +23,15 @@
  * - Instead of `T[K] extends U ? K : never`, use `T[K] extends U ? never : K`
  * - This will keep properties that DON'T match the type U
  */
+interface ApiResponse {
+  id: number;
+  name: string;
+  errors: string[];
+  timestamp: number;
+  success: boolean;
+}
 
-export type OmitByType<T, U> = unknown;
+export type OmitByType<T, U> = {
+  [K in keyof T as T[K] extends U ? never : K]: T[K];
+};
+type WithoutNumbers = OmitByType<ApiResponse, number>;

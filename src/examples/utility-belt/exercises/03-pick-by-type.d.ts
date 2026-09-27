@@ -26,6 +26,15 @@
  * - Use `as` keyword to filter keys (mapped type key remapping)
  * - The syntax is: `{ [K in keyof T as T[K] extends U ? K : never]: T[K] }`
  */
+interface Product {
+  id: number;
+  name: string;
+  price: number;
+  description: string;
+  inStock: boolean;
+}
 
-// TODO: Implement PickByType here
-export type PickByType<T, U> = unknown;
+export type PickByType<T, U> = {
+  [K in keyof T as T[K] extends U ? K : never]: T[K];
+};
+type StringProps = PickByType<Product, string>;
