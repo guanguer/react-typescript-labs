@@ -1,19 +1,14 @@
 import { Card } from '$/common/components/card';
 import { Checkbox } from '$/common/components/checkbox';
-
-import { updatePlan } from './api';
+import type { ChangeEvent } from 'react';
+import { usePlans } from './plans-context';
 import type { Plan } from './types';
 
-export interface PlanProps extends Plan {
-  onChange: (plan: Plan) => void;
-}
+export const GrandPlan = ({ id, title, completed }: Plan) => {
+  const { updatePlan } = usePlans();
 
-export const GrandPlan = ({ id, title, completed, onChange }: PlanProps) => {
-  // Improvement: Find a way to avoid using `any` here!
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleChange = async (event: any) => {
-    const plan = await updatePlan(id, { completed: event.target.checked });
-    onChange(plan);
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+    updatePlan(id, { completed: event.target.checked });
   };
 
   return (

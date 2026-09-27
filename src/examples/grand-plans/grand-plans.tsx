@@ -1,32 +1,17 @@
 import { Container } from '$/common/components/container';
-import { useEffect, useState } from 'react';
-import { allPlans, createPlan } from './api';
 import { CreateGrandPlanForm } from './create-grand-plan';
 import { GrandPlan } from './plan';
-import type { Plan } from './types';
+import { usePlans } from './plans-context';
 
 export const GrandPlans = () => {
-  const [plans, setPlans] = useState<Plan[]>([]);
-
-  const handleSubmit = async (title: string) => {
-    const plan = await createPlan(title);
-    setPlans((plans) => [...plans, plan]);
-  };
-
-  const handleChange = (updatedPlan: Plan) => {
-    setPlans((plans) => plans.map((plan) => (plan.id === updatedPlan.id ? updatedPlan : plan)));
-  };
-
-  useEffect(() => {
-    allPlans().then((data) => setPlans(data));
-  }, []);
+  const { plans } = usePlans();
 
   return (
     <Container className="space-y-4">
-      <CreateGrandPlanForm onSubmit={handleSubmit} />
+      <CreateGrandPlanForm />
       <ul className="flex flex-col gap-4">
         {plans.map((plan) => (
-          <GrandPlan key={plan.id} {...plan} onChange={handleChange} />
+          <GrandPlan key={plan.id} {...plan} />
         ))}
       </ul>
     </Container>

@@ -1,23 +1,19 @@
 import { Button } from '$/common/components/button';
 import { Input } from '$/common/components/input';
-
-type CreateGrandPlanProps = {
-  onSubmit: (plan: string) => void;
-};
+import { usePlans } from './plans-context';
 
 // Can we make this adhere to an HTMLFormElement interface?
-export const CreateGrandPlanForm = ({ onSubmit }: CreateGrandPlanProps) => {
+export const CreateGrandPlanForm = () => {
+  const { createPlan } = usePlans();
   return (
     <form
       className="flex items-center gap-2"
       onSubmit={(e) => {
         e.preventDefault();
-
         const formData = new FormData(e.currentTarget);
-        // Potential improvement: Validate that the form data is a string
         const plan = formData.get('grand-plan') as string;
-
-        onSubmit(plan);
+        createPlan(plan);
+        e.currentTarget.reset();
       }}
     >
       <Input

@@ -3,12 +3,15 @@ import ReactDOM from 'react-dom/client';
 import { GrandPlans } from './grand-plans';
 
 import '$/common/index.css';
+import { PlansProvider } from './plans-provider';
 
 const rootElement = document.getElementById('root');
 if (!rootElement) throw new Error('Failed to find the root element. 😵‍💫');
 
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
-    <GrandPlans />
+    <PlansProvider>
+      <GrandPlans />
+    </PlansProvider>
   </React.StrictMode>,
 );
